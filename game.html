@@ -22,7 +22,7 @@
             default: 'arcade',
             arcade: {
                 gravity: { y: 800 },
-                debug: false
+                debug: true
             }
         },
         scene: {
@@ -32,10 +32,11 @@
         }
     };
 
-    var platforms;
+    var floor;
     var player;
     var cursors;
     var direction = "right";
+    var wall;
     var game = new Phaser.Game(config);
     
     function preload ()
@@ -44,6 +45,7 @@
         this.load.spritesheet('girlL', 'assets/playerLeft.png', { frameWidth: 69, frameHeight: 44 });
         this.load.image('forest', 'assets/forest.png');
         this.load.image('plat', 'assets/platform.png');
+        this.load.image('dirt', 'assets/dirt.png');
     }
 
     function create ()
@@ -52,14 +54,29 @@
 
         player = this.physics.add.sprite(100, 450, 'girlR').setScale(3);
 
+        player.setCircle(16, 10, 12);
+
         player.setBounce(0.1);
         player.setCollideWorldBounds(true);
 
         cursors = this.input.keyboard.createCursorKeys();
 
+        floor = this.physics.add.staticGroup();
         platforms = this.physics.add.staticGroup();
 
-        platforms.create(700, 773, 'plat').setScale(3.5).refreshBody();
+        floor.create(700, 773, 'plat').setScale(3.5).refreshBody();
+
+        wall = this.add.tileSprite(1000, 550, 500, 45, 'dirt');
+
+        this.physics.add.existing(wall);
+        wall.body.immovable = true;
+        wall.body.allowGravity = false;
+
+        wall2 = this.add.tileSprite(200, 450, 400, 45, 'dirt');
+
+        this.physics.add.existing(wall2);
+        wall2.body.immovable = true;
+        wall2.body.allowGravity = false;
 
         this.anims.create({
             key: 'left',
@@ -100,7 +117,14 @@
         this.anims.create({
             key: 'strikeR',
             frames: this.anims.generateFrameNumbers('girlR', { start: 14, end: 24 }),
-            frameRate: 20,
+            frameRate: 15,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'strikeL',
+            frames: this.anims.generateFrameNumbers('girlL', { frames: [15, 14, 13, 12, 11, 22, 21, 20, 19, 18, 29, 28]}),
+            frameRate: 15,
             repeat: -1
         });
 
@@ -110,12 +134,20 @@
             frameRate: 20,
             repeat: -1
         });
+        this.physics.add.collider(player, floor);
         this.physics.add.collider(player, platforms);
+        this.physics.add.collider(player, wall);
+        this.physics.add.collider(player, wall2);
+
+        wall.body.setCollideWorldBounds(true);
+        wall2.body.setCollideWorldBounds(true);
+
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     }
 
     function update ()
     {
-        
+
         if (cursors.left.isDown)
         {
             console.log("left");
@@ -123,6 +155,7 @@
 
             player.anims.play('left', true);
             direction = "left";
+            player.setCircle(16, 25, 12);
         }
         else if (cursors.right.isDown)
         {
@@ -131,15 +164,23 @@
 
             player.anims.play('right', true);
             direction = "right"; 
+            player.setCircle(16, 10, 12);
         }
-       /* else if ()
+        else if (keyE.isDown)
         {
-            console.log("right");
-            player.setVelocityX(300);
+            console.log("strike");
 
-            player.anims.play('right', true);
-            direction = "right"; 
-        }*/
+            player.setVelocityX(0);
+
+            if (direction === "right")
+            {
+                player.anims.play('strikeR', true);
+            }
+            else if (direction === "left")
+            {
+                player.anims.play('strikeL', true);   
+            }
+        }
         else
         {
             player.setVelocityX(0);
@@ -151,15 +192,11 @@
             {
                 player.anims.play('idleL', true);  
             }
-            
-             
         }
 
         if (cursors.up.isDown && player.body.touching.down)
         {
-            player.setVelocityY(-430);
-
-           // player.anims.play('upR', true);
+            player.setVelocityY(-600);
         }
 
     }

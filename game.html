@@ -41,6 +41,7 @@
     var keyE;
     var enemyHP;
     var enemyAndPlayerOverlap = false;
+    var enemyIsDead = false;
     var enemyMove = new EnemyMove();
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
@@ -233,12 +234,14 @@
     {
         if (enemyAndPlayerOverlap == true)
         {
+            enemyAndPlayerOverlap = false;
             if (enemy == null)
             {
                 return;
             }
             if (keyE.isDown)
             {
+                enemyIsDead = true;
                 enemyMove.dieRight();
                 enemy.alive = false;
                 enemy = null;
@@ -246,23 +249,27 @@
             }
         }
 
-        if (keyD.isDown)
+        if (enemyIsDead != true)
         {
-            enemyMove.moveRight();
-        }
-        else if (keyA.isDown)
-        {
-            enemyMove.moveLeft();
-        }
-        else
-        {
-           enemyMove.idle();
+            if (keyD.isDown)
+            {
+                enemyMove.moveRight();
+            }
+            else if (keyA.isDown)
+            {
+                enemyMove.moveLeft();
+            }
+            else
+            {
+            enemyMove.idle();
+            }
+            
+            if (keyW.isDown && enemy.body.touching.down)
+            {
+                enemyMove.jump();
+            }
         }
         
-        if (keyW.isDown && enemy.body.touching.down)
-        {
-            enemyMove.jump();
-        }
     }
 
     function update ()

@@ -49,4 +49,10 @@ class EnemyMove{
         enemy.anims.play('enemyIdleL', true); 
         enemy.setCircle(30, 75, 30);
     }
+
+    dieRight(){
+        enemy.setVelocityX(0);
+        enemy.anims.play('enemyDieRight', true);  
+        enemy.setCircle(30, 2, 30);
+    }
 }

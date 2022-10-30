@@ -33,12 +33,14 @@
             update: update
         }
     };
-
+    // gloabal varables
     var floor;
     var player;
     var cursors;
     var enemy;
     var keyE;
+    var enemyHP;
+    var enemyAndPlayerOverlap = false;
     var enemyMove = new EnemyMove();
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
@@ -87,6 +89,7 @@
 
         enemy.setBounce(0.1);
         enemy.setCollideWorldBounds(true);
+        game.physics.add.overlap(enemy, player, overlapEnemy)
     }
 
     function playerAnimations(game)
@@ -181,6 +184,14 @@
             frameRate: 12,
             repeat: -1
         });
+
+        game.anims.create({
+            key: 'enemyDieRight',
+            frames: game.anims.generateFrameNumbers('enemyR', { frames: [39, 38, 37, 36, 35, 34, 33] }),
+            frameRate: 10,
+            repeat: 0,
+            hideOnComplete: true
+        });
     }
 
     function createFloor(game)
@@ -188,6 +199,10 @@
         floor = game.physics.add.staticGroup();
         floor.create(700, 773, 'plat').setScale(3.5).refreshBody();
         game.physics.add.collider(player, floor);
+    }
+
+    const overlapEnemy = (enemy, player) => {
+        enemyAndPlayerOverlap = true;
     }
 
     function create ()
@@ -214,32 +229,23 @@
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     }
 
-    function update ()
+    function updateEnemy()
     {
-        // checking whitch player animation to use
-        if (cursors.left.isDown)
+        if (enemyAndPlayerOverlap == true)
         {
-            playerMove.moveLeft();
-        }
-        else if (cursors.right.isDown)
-        {
-            playerMove.moveRight();
-        }
-        else if (keyE.isDown)
-        {
-            playerMove.strike();
-        }
-        else
-        {
-            playerMove.idle();
+            if (enemy == null)
+            {
+                return;
+            }
+            if (keyE.isDown)
+            {
+                enemyMove.dieRight();
+                enemy.alive = false;
+                enemy = null;
+                return;
+            }
         }
 
-        if (cursors.up.isDown && player.body.touching.down)
-        {
-            player.setVelocityY(-600);
-        }
-
-        // checking whitch enemy animation to use
         if (keyD.isDown)
         {
             enemyMove.moveRight();
@@ -257,6 +263,37 @@
         {
             enemyMove.jump();
         }
+    }
+
+    function update ()
+    {
+        // checking whitch player animation to use
+        if (cursors.left.isDown)
+        {
+            playerMove.moveLeft();
+        }
+        else if (cursors.right.isDown)
+        {
+            playerMove.moveRight();
+        }
+        else if (keyE.isDown)
+        {
+            playerMove.strike();
+
+        }
+        else
+        {
+            playerMove.idle();
+        }
+
+        if (cursors.up.isDown && player.body.touching.down)
+        {
+            player.setVelocityY(-600);
+        }
+
+        // checking whitch enemy animation to use
+        updateEnemy();
+
     }
 
 </script>

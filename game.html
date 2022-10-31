@@ -42,6 +42,7 @@
     var enemyHP;
     var enemyAndPlayerOverlap = false;
     var enemyIsDead = false;
+    var coin;
     var enemyMove = new EnemyMove();
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
@@ -55,6 +56,7 @@
         this.load.image('dirt', 'assets/dirt.png');
         this.load.spritesheet('enemyR', 'assets/enemy.png', { frameWidth: 140, frameHeight: 93 });
         this.load.spritesheet('enemyL', 'assets/enemyLeft.png', { frameWidth: 140, frameHeight: 93 });
+        this.load.spritesheet('coin', 'assets/coin.png', { frameWidth: 18, frameHeight: 20 });
     }
 
     function createPlatform(game, x, y, width, thinkness)
@@ -66,6 +68,7 @@
         platform.body.setCollideWorldBounds(true);
         game.physics.add.collider(player, platform);
         game.physics.add.collider(enemy, platform);
+        game.physics.add.collider(coin, platform);
     
         return platform;
     }
@@ -92,6 +95,16 @@
         enemy.setCollideWorldBounds(true);
         game.physics.add.overlap(enemy, player, overlapEnemy)
     }
+
+    function createCoin(game, x, y)
+    {
+        coin = game.physics.add.sprite(x, y, 'coin').setScale(2.5);
+
+        coin.setBounce(0.1);
+        coin.setCollideWorldBounds(true);
+        game.physics.add.overlap(coin, player, overlapCoin)
+    }
+
 
     function playerAnimations(game)
     {
@@ -205,6 +218,9 @@
     const overlapEnemy = (enemy, player) => {
         enemyAndPlayerOverlap = true;
     }
+    const overlapCoin = (coin, player) => {
+        coin.destroy();
+    }
 
     function create ()
     {
@@ -212,6 +228,7 @@
 
         createPlayer(this, 100, 450);
         createEnemy(this, 100, 150);
+        createCoin(this, 500, 200);
 
         cursors = this.input.keyboard.createCursorKeys();
 
@@ -230,8 +247,9 @@
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     }
 
+    // checking whitch enemy animation to use
     function updateEnemy()
-    {
+    {  
         if (enemyAndPlayerOverlap == true)
         {
             enemyAndPlayerOverlap = false;
@@ -272,9 +290,9 @@
         
     }
 
-    function update ()
+    // checking whitch player animation to use
+    function updatePlayer()
     {
-        // checking whitch player animation to use
         if (cursors.left.isDown)
         {
             playerMove.moveLeft();
@@ -297,10 +315,14 @@
         {
             player.setVelocityY(-600);
         }
+    }
 
-        // checking whitch enemy animation to use
+    function update ()
+    {
+        updatePlayer();
+        
         updateEnemy();
-
+        
     }
 
 </script>

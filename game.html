@@ -24,7 +24,7 @@
             default: 'arcade',
             arcade: {
                 gravity: { y: 800 },
-                debug: true
+                debug: false
             }
         },
         scene: {
@@ -69,17 +69,13 @@
         game.physics.add.collider(player, platform);
         game.physics.add.collider(enemy, platform);
         game.physics.add.collider(coin, platform);
-    
-        return platform;
     }
 
     // setting all needed concepts for the player
     function createPlayer(game, x, y)
     {
         player = game.physics.add.sprite(x, y, 'girlR').setScale(3);
-
         player.setCircle(16, 10, 12);
-
         player.setBounce(0.1);
         player.setCollideWorldBounds(true);
     }
@@ -88,23 +84,20 @@
     function createEnemy(game, x, y)
     {
         enemy = game.physics.add.sprite(x, y, 'enemyR').setScale(2.5);
-
         enemy.setCircle(30, 2, 30);
-
         enemy.setBounce(0.1);
         enemy.setCollideWorldBounds(true);
-        game.physics.add.overlap(enemy, player, overlapEnemy)
+        game.physics.add.overlap(enemy, player, (enemy,player) => enemyAndPlayerOverlap = true);
     }
 
     function createCoin(game, x, y)
     {
         coin = game.physics.add.sprite(x, y, 'coin').setScale(2.5);
-
         coin.setBounce(0.1);
         coin.setCollideWorldBounds(true);
-        game.physics.add.overlap(coin, player, overlapCoin)
+        game.physics.add.overlap(coin, player, (coin, player) => coin.destroy());
     }
-
+  
 
     function playerAnimations(game)
     {
@@ -215,14 +208,7 @@
         game.physics.add.collider(player, floor);
     }
 
-    const overlapEnemy = (enemy, player) => {
-        enemyAndPlayerOverlap = true;
-    }
-    const overlapCoin = (coin, player) => {
-        coin.destroy();
-    }
-
-    function create ()
+   function create ()
     {
         this.add.image(400, 265, 'forest').setScale(1.7);
 
@@ -248,46 +234,44 @@
     }
 
     // checking whitch enemy animation to use
-    function updateEnemy()
+    function updateEnemy(game)
     {  
+        if (enemy == null || enemyIsDead === true)
+        {
+            return;
+        }
+
         if (enemyAndPlayerOverlap == true)
         {
             enemyAndPlayerOverlap = false;
-            if (enemy == null)
-            {
-                return;
-            }
             if (keyE.isDown)
             {
                 enemyIsDead = true;
                 enemyMove.dieRight();
+                createCoin(game, enemy.x - 85, enemy.y - 400);
                 enemy.alive = false;
                 enemy = null;
                 return;
             }
         }
 
-        if (enemyIsDead != true)
+        if (keyD.isDown)
         {
-            if (keyD.isDown)
-            {
-                enemyMove.moveRight();
-            }
-            else if (keyA.isDown)
-            {
-                enemyMove.moveLeft();
-            }
-            else
-            {
+            enemyMove.moveRight();
+        }
+        else if (keyA.isDown)
+        {
+            enemyMove.moveLeft();
+        }
+        else
+        {
             enemyMove.idle();
-            }
-            
-            if (keyW.isDown && enemy.body.touching.down)
-            {
-                enemyMove.jump();
-            }
         }
         
+        if (keyW.isDown && enemy.body.touching.down)
+        {
+            enemyMove.jump();
+        }
     }
 
     // checking whitch player animation to use
@@ -304,7 +288,6 @@
         else if (keyE.isDown)
         {
             playerMove.strike();
-
         }
         else
         {
@@ -320,9 +303,7 @@
     function update ()
     {
         updatePlayer();
-        
-        updateEnemy();
-        
+        updateEnemy(this);
     }
 
 </script>

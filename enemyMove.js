@@ -1,17 +1,16 @@
 class EnemyMove{
-    
-    constructor()
+    constructor(inEnemy)
     {
         this.enemyDirection = "right";
+        this.enemy = inEnemy;
     }
     
     moveRight(){
         enemy.setVelocityX(300);
-
+        console.log("move right");
         enemy.anims.play('enemyWalkRight', true);
         enemy.setCircle(30, 2, 30);
         this.enemyDirection = "right"; 
-
     }
 
     moveLeft(){

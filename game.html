@@ -14,6 +14,7 @@
 
 <script src="enemyMove.js"></script>
 <script src="playerMove.js"></script>
+<script src="enemyAI.js"></script>
 <script type="text/javascript">
 
     var config = {
@@ -45,7 +46,8 @@
     var coin;
     var score = 0;
     var scoreText;
-    var enemyMove = new EnemyMove();
+    //var enemyMove = new EnemyMove();
+    var enemyAI;
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
     
@@ -86,6 +88,7 @@
     function createEnemy(game, x, y)
     {
         enemy = game.physics.add.sprite(x, y, 'enemyR').setScale(2.5);
+        enemyAI = new EnemyAI(enemy);
         enemy.setCircle(30, 2, 30);
         enemy.setBounce(0.1);
         enemy.setCollideWorldBounds(true);
@@ -263,7 +266,7 @@
             if (keyE.isDown)
             {
                 enemyIsDead = true;
-                enemyMove.dieRight();
+                enemyAI.enemyMove.dieRight();
                 createCoin(game, enemy.x - 85, enemy.y - 400);
                 enemy.alive = false;
                 enemy = null;
@@ -273,20 +276,20 @@
 
         if (keyD.isDown)
         {
-            enemyMove.moveRight();
+            enemyAI.enemyMove.moveRight();
         }
         else if (keyA.isDown)
         {
-            enemyMove.moveLeft();
+            enemyAI.enemyMove.moveLeft();
         }
         else
         {
-            enemyMove.idle();
+            enemyAI.enemyMove.idle();
         }
         
         if (keyW.isDown && enemy.body.touching.down)
         {
-            enemyMove.jump();
+            enemyAI.enemyMove.jump();
         }
     }
 
@@ -318,6 +321,11 @@
 
     function update ()
     {
+        if (!enemyAI.moving && enemy != null) 
+        {
+            enemyAI.chooseDirection();
+        }
+        else enemyAI.moving = false;
         updatePlayer();
         updateEnemy(this);
     }

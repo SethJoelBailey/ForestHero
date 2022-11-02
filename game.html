@@ -25,7 +25,7 @@
             default: 'arcade',
             arcade: {
                 gravity: { y: 800 },
-                debug: true
+                debug: false
             }
         },
         scene: {
@@ -47,6 +47,7 @@
     var score = 0;
     var scoreText;
     var enemyAI;
+    var numOfEnemys = 1;
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
     
@@ -266,8 +267,24 @@
                 createCoin(game, enemy.x - 85, enemy.y - 400);
                 enemy.alive = false;
                 enemy = null;
+                numOfEnemys--;
+                
+                if (numOfEnemys == 0)
+                {
+                    winGame(game);
+                }
+
                 return;
             }
+        }
+    }
+
+    function winGame(game)
+    {
+        game.add.text(450, 10, "You win!", { font: "100px Arial", fill: "#237BCC", align: "center" });
+        for (var i = 0; i <= 1300; i = i + 80)
+        {
+            createCoin(game, i, 20,);
         }
     }
 

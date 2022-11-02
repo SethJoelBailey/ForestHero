@@ -5,6 +5,7 @@ class EnemyAI
         this.enemy = enemy;
         this.moving = false;
         this.enemyMove = new EnemyMove(enemy);
+        setInterval(this.chooseDirection,4000,this);
     }
     
     generateRand(upperLimit)
@@ -13,40 +14,19 @@ class EnemyAI
         return Math.floor(Math.random() * upperLimit) + 1;
     }
 
-    chooseDirection()
+    chooseDirection(_this)
     {
-        var direction = this.generateRand(1);
+        var direction = _this.generateRand(3);
         console.log(direction);
         switch(direction)
         {
-            case 1: this.walk(4000, "right");
+            case 1: _this.enemyMove.moveRight();
             break;
-            case 2: this.walk(4000, "left");
+            case 2: _this.enemyMove.moveLeft();
             break;
-            case 3: this.walk(4000, "up");
-            break;
-        }
-    }
-
-    walk(time, direction)
-    {
-        this.moving = true;
-        switch(direction)
-        {
-            case "right": 
-            console.log("walk right");
-            setTimeout(this.enemyMove.moveRight, time);
-            break;
-            case "left": 
-            console.log("walk left");
-            setTimeout(this.enemyMove.moveLeft, time);
-            break;
-            case "up": 
-            console.log("jump");
-            setTimeout(this.enemyMove.jump, time);
+            case 3: _this.enemyMove.jump();
             break;
         }
-        
     }
 
 }

@@ -25,7 +25,7 @@
             default: 'arcade',
             arcade: {
                 gravity: { y: 800 },
-                debug: false
+                debug: true
             }
         },
         scene: {
@@ -89,7 +89,7 @@
         enemy = game.physics.add.sprite(x, y, 'enemyR').setScale(2.5);
         enemyAI = new EnemyAI(enemy);
         enemy.setCircle(30, 2, 30);
-        enemy.setBounce(0.1);
+        enemy.setBounce(0);
         enemy.setCollideWorldBounds(true);
         game.physics.add.overlap(enemy, player, (enemy,player) => enemyAndPlayerOverlap = true);
     }

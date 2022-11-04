@@ -38,16 +38,15 @@
     var floor;
     var player;
     var cursors;
-    var enemy;
+    var enemies = [];
     var keyE;
     var enemyHP;
     var enemyAndPlayerOverlap = false;
-    var enemyIsDead = false;
     var coin;
     var score = 0;
     var scoreText;
     var enemyAI;
-    var numOfEnemys = 1;
+    var numOfEnemys = 0;
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
     
@@ -71,8 +70,10 @@
         platform.body.allowGravity = false;
         platform.body.setCollideWorldBounds(true);
         game.physics.add.collider(player, platform);
-        game.physics.add.collider(enemy, platform);
         game.physics.add.collider(coin, platform);
+        enemies.forEach(enemy => {
+            game.physics.add.collider(enemy.sprite, platform);
+        });
     }
 
     // setting all needed concepts for the player
@@ -87,12 +88,19 @@
     // setting all needed concepts for the enemy
     function createEnemy(game, x, y)
     {
-        enemy = game.physics.add.sprite(x, y, 'enemyR').setScale(2.5);
-        enemyAI = new EnemyAI(enemy);
-        enemy.setCircle(30, 2, 30);
-        enemy.setBounce(0);
-        enemy.setCollideWorldBounds(true);
-        game.physics.add.overlap(enemy, player, (enemy,player) => enemyAndPlayerOverlap = true);
+        let enemySprite = game.physics.add.sprite(x, y, 'enemyR').setScale(2.5);
+        enemySprite.setCircle(30, 2, 30);
+        enemySprite.setBounce(0);
+        enemySprite.setCollideWorldBounds(true);
+
+        let enemy = { sprite: enemySprite,
+                      isEnemyDead : false,
+                      isPlayerOverlap : false,
+                      ai : new EnemyAI(enemySprite)};
+
+    
+        game.physics.add.overlap(enemySprite, player, (enemySprite,player) => enemy.isPlayerOverlap = true);
+        return enemy;
     }
 
     // setting all needed concepts for the coins
@@ -169,6 +177,13 @@
             frameRate: 20,
             repeat: -1
         });
+
+        game.anims.create({
+            key: 'die',
+            frames: game.anims.generateFrameNumbers('girlR', { start: 26, end: 36 }),
+            frameRate: 12,
+            repeat: 0
+        });
     }
 
     function generateEnemyAnimations(game)
@@ -210,6 +225,20 @@
             repeat: 0,
             hideOnComplete: true
         });
+
+        game.anims.create({
+            key: 'enemyStrikeRight',
+            frames: game.anims.generateFrameNumbers('enemyR', { frames: [23, 22, 21, 20, 19, 18, 17, 16, 31] }),
+            frameRate: 12,
+            repeat: -1,
+        });
+
+        game.anims.create({
+            key: 'enemyStrikeLeft',
+            frames: game.anims.generateFrameNumbers('enemyL', { start: 16, end: 24 }),
+            frameRate: 12,
+            repeat: -1,
+        });
     }
 
     function createFloor(game)
@@ -224,7 +253,16 @@
         this.add.image(400, 265, 'forest').setScale(1.7);
 
         createPlayer(this, 100, 450);
-        createEnemy(this, 100, 150);
+        let positions = [
+            {x:600,y:450},
+            {x:400,y:250},
+            {x:600,y:20}
+        ]
+        positions.forEach(element => {
+           enemies.push( createEnemy(this, element.x, element.y));
+           numOfEnemys++;
+        }); 
+    
         createCoin(this, 500, 200,);
 
         cursors = this.input.keyboard.createCursorKeys();
@@ -250,23 +288,29 @@
     }
 
     // checking whitch enemy animation to use
-    function updateEnemy(game)
+    function updateEnemies(game)
+    {
+        enemies.forEach(enemy => {
+            updateEnemy(game,enemy)
+        });
+   
+    }
+    function updateEnemy(game,enemy)
     {  
-        if (enemy == null || enemyIsDead === true)
+        if (enemy.sprite == null || enemy.sprite.alive === false)
         {
             return;
         }
 
-        if (enemyAndPlayerOverlap == true)
+        if (enemy.isPlayerOverlap)
         {
-            enemyAndPlayerOverlap = false;
+            enemy.isPlayerOverlap = false;
             if (keyE.isDown)
             {
-                enemyIsDead = true;
-                enemyAI.enemyMove.dieRight();
-                createCoin(game, enemy.x - 85, enemy.y - 400);
-                enemy.alive = false;
-                enemy = null;
+                enemy.ai.enemyMove.dieRight();
+                createCoin(game, enemy.sprite.x - 85, enemy.sprite.y - 400);
+                enemy.sprite.alive = false;
+                enemy.sprte = null;        
                 numOfEnemys--;
                 
                 if (numOfEnemys == 0)
@@ -275,6 +319,11 @@
                 }
 
                 return;
+            }
+
+            if (enemy.ai.enemyMove.enemyIsStriking && playerMove.isPlayerDead == false)
+            {
+                looseGame(game);
             }
         }
     }
@@ -288,9 +337,19 @@
         }
     }
 
+    function looseGame(game)
+    {
+        game.add.text(450, 10, "You loose!", { font: "100px Arial", fill: "#237BCC", align: "center" });
+        playerMove.die();
+    }
+
     // checking whitch player animation to use
     function updatePlayer()
     {
+        if (playerMove.isPlayerDead)
+        {
+            return;
+        }
         if (cursors.left.isDown)
         {
             playerMove.moveLeft();
@@ -317,7 +376,7 @@
     function update ()
     {
         updatePlayer();
-        updateEnemy(this);
+        updateEnemies(this);
     }
 
 </script>

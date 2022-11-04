@@ -2,30 +2,31 @@ class EnemyMove{
     constructor(inEnemy)
     {
         this.enemyDirection = "right";
+        this.enemyIsStriking = false;
         this.enemy = inEnemy;
     }
     
     moveRight(){
-        enemy.setVelocityX(300);
+        this.enemy.setVelocityX(300);
         console.log("move right");
-        enemy.anims.play('enemyWalkRight', true);
-        enemy.setCircle(30, 2, 30);
+        this.enemy.anims.play('enemyWalkRight', true);
+        this.enemy.setCircle(30, 2, 30);
         this.enemyDirection = "right"; 
     }
 
     moveLeft(){
-        enemy.setVelocityX(-300);
-        enemy.anims.play('enemyWalkLeft', true);
-        enemy.setCircle(30, 75, 30);
+        this.enemy.setVelocityX(-300);
+        this.enemy.anims.play('enemyWalkLeft', true);
+        this.enemy.setCircle(30, 75, 30);
         this.enemyDirection = "left"; 
     }
 
     jump(){
-        enemy.setVelocityY(-600);
+        this.enemy.setVelocityY(-600);
     }
 
     idle(){
-        enemy.setVelocityX(0);
+        this.enemy.setVelocityX(0);
         if (this.enemyDirection === "right")
         {
             this.idleRight();
@@ -37,21 +38,35 @@ class EnemyMove{
     }
 
     idleRight(){
-        enemy.setVelocityX(0);
-        enemy.anims.play('enemyIdleR', true);  
-        enemy.setCircle(30, 2, 30);
+        this.enemy.setVelocityX(0);
+        this.enemy.anims.play('enemyIdleR', true);  
+        this.enemy.setCircle(30, 2, 30);
         
     }
 
     idleLeft(){
-        enemy.setVelocityX(0); 
-        enemy.anims.play('enemyIdleL', true); 
-        enemy.setCircle(30, 75, 30);
+        this.enemy.setVelocityX(0); 
+        this.enemy.anims.play('enemyIdleL', true); 
+        this.enemy.setCircle(30, 75, 30);
     }
 
     dieRight(){
-        enemy.setVelocityX(0);
-        enemy.anims.play('enemyDieRight', true);  
-        enemy.setCircle(30, 2, 30);
+        this.enemy.setVelocityX(0);
+        this.enemy.anims.play('enemyDieRight', true);  
+        this.enemy.setCircle(30, 2, 30);
+    }
+
+    strikeRight(){
+        this.enemy.setVelocityX(0);
+        this.enemy.anims.play('enemyStrikeRight', true);  
+        this.enemy.setCircle(30, 2, 30);
+        this.enemyIsStriking = true;
+    }
+
+    strikeLeft(){
+        this.enemy.setVelocityX(0);
+        this.enemy.anims.play('enemyStrikeLeft', true);  
+        this.enemy.setCircle(30, 75, 30);
+        this.enemyIsStriking = true;
     }
 }

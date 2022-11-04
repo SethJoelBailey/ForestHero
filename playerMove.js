@@ -3,6 +3,7 @@ class PlayerMove{
     constructor()
     {
         this.direction = "right";
+        this.isPlayerDead = false;
     }
 
     moveRight(){
@@ -65,5 +66,12 @@ class PlayerMove{
 
     strikeLeft(){
         player.anims.play('strikeL', true);   
+    }
+
+    die()
+    {
+        player.setVelocityX(0);
+        player.anims.play('die', true)
+        this.isPlayerDead = true;
     }
 }

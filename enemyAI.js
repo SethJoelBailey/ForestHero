@@ -5,7 +5,7 @@ class EnemyAI
         this.enemy = enemy;
         this.moving = false;
         this.enemyMove = new EnemyMove(enemy);
-        setInterval(this.chooseDirection,2000,this);
+        this.dirTimer = setInterval(this.chooseDirection,2000,this);
     }
     
     generateRand(upperLimit)
@@ -17,7 +17,6 @@ class EnemyAI
     chooseDirection(_this)
     {
         if (_this.enemy == null) return
-
         var direction = _this.generateRand(5);
         console.log(direction);
         switch(direction)
@@ -33,6 +32,11 @@ class EnemyAI
             case 5: _this.enemyMove.strikeLeft();
             break;
         }
+    }
+
+    kill()
+    {
+        clearInterval(this.dirTimer);
     }
 
 }

@@ -62,6 +62,7 @@
         this.load.spritesheet('coin', 'assets/coin.png', { frameWidth: 18, frameHeight: 20 });
     }
 
+    // setting all needed concepts for the platform
     function createPlatform(game, x, y, width, thinkness)
     {
         let platform = game.add.tileSprite(x, y, width, thinkness, 'dirt');
@@ -254,16 +255,17 @@
 
         createPlayer(this, 100, 450);
         let positions = [
-            {x:600,y:450},
-            {x:400,y:250},
-            {x:600,y:20}
+            {x:1200,y:350},
+            {x:200,y:250},
+            {x:600,y:20},
+            {x:850,y:20}
         ]
         positions.forEach(element => {
            enemies.push( createEnemy(this, element.x, element.y));
            numOfEnemys++;
         }); 
     
-        createCoin(this, 500, 200,);
+        createCoin(this, 1000, 800,);
 
         cursors = this.input.keyboard.createCursorKeys();
 
@@ -312,6 +314,7 @@
                 enemy.sprite.alive = false;
                 enemy.sprte = null;        
                 numOfEnemys--;
+                enemy.ai.kill();
                 
                 if (numOfEnemys == 0)
                 {
@@ -339,7 +342,7 @@
 
     function looseGame(game)
     {
-        game.add.text(450, 10, "You loose!", { font: "100px Arial", fill: "#237BCC", align: "center" });
+        game.add.text(450, 10, "You lose!", { font: "100px Arial", fill: "#237BCC", align: "center" });
         playerMove.die();
     }
 

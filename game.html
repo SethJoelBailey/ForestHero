@@ -190,7 +190,6 @@
     function generateEnemyAnimations(game)
     {
         // generating enemy right and left animations
-
         game.anims.create({
             key: 'enemyIdleR',
             frames: game.anims.generateFrameNumbers('enemyR', { start: 0, end: 7 }),
@@ -221,7 +220,15 @@
 
         game.anims.create({
             key: 'enemyDieRight',
-            frames: game.anims.generateFrameNumbers('enemyR', { frames: [39, 38, 37, 36, 35, 34, 33] }),
+            frames: game.anims.generateFrameNumbers('enemyR', { frames: [26, 25, 24, 39, 38, 37, 36, 35, 34, 33] }),
+            frameRate: 10,
+            repeat: 0,
+            hideOnComplete: true
+        });
+
+        game.anims.create({
+            key: 'enemyDieLeft',
+            frames: game.anims.generateFrameNumbers('enemyL', { start: 29, end: 38 }),
             frameRate: 10,
             repeat: 0,
             hideOnComplete: true
@@ -309,7 +316,12 @@
             enemy.isPlayerOverlap = false;
             if (keyE.isDown)
             {
-                enemy.ai.enemyMove.dieRight();
+                if (enemy.ai.enemyMove.enemyDirection == "left")
+                {
+                    enemy.ai.enemyMove.dieLeft();
+                }
+                else enemy.ai.enemyMove.dieRight();
+                
                 createCoin(game, enemy.sprite.x - 85, enemy.sprite.y - 400);
                 enemy.sprite.alive = false;
                 enemy.sprte = null;        

@@ -60,6 +60,15 @@ class EnemyMove{
         this.enemy.anims.play('enemyDieRight', true);  
         this.enemy.setCircle(30, 2, 30);
         this.enemyIsStriking = false;
+        this.enemyDirection = "right";
+    }
+
+    dieLeft(){
+        this.enemy.setVelocityX(0);
+        this.enemy.anims.play('enemyDieLeft', true);  
+        this.enemy.setCircle(30, 75, 30);
+        this.enemyIsStriking = false;
+        this.enemyDirection = "left";
     }
 
     strikeRight(){

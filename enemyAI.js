@@ -5,7 +5,7 @@ class EnemyAI
         this.enemy = enemy;
         this.moving = false;
         this.enemyMove = new EnemyMove(enemy);
-        this.dirTimer = setInterval(this.chooseDirection,2000,this);
+        this.dirTimer = setInterval(this.chooseDirection, 2000, this);
     }
     
     generateRand(upperLimit)

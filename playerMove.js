@@ -8,7 +8,7 @@ class PlayerMove{
 
     moveRight(){
         player.setVelocityX(300);
-
+        //activating the walk right animation
         player.anims.play('right', true);
         this.direction = "right"; 
         player.setCircle(16, 10, 12);

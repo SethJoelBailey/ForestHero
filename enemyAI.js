@@ -38,5 +38,5 @@ class EnemyAI
     {
         clearInterval(this.dirTimer);
     }
-
+//dddddd
 }

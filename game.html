@@ -121,6 +121,7 @@
             coin.destroy();
             score++;
             updateText();
+            fadeInstructions();
         });
     }
   
@@ -296,6 +297,8 @@
    
         scoreText = this.add.text(1110, 10, "= " + score, { font: "65px Arial", fill: "#237BCC", align: "center" });
 
+        instructionText = this.add.text(110, 10, "arrows to move and E to attack", { font: "65px Arial", fill: "#237BCC", align: "center" });
+
     }
 
     function updateText() 
@@ -393,6 +396,11 @@
         {
             player.setVelocityY(-600);
         }
+    }
+
+    function fadeInstructions()
+    {
+        instructionText.destroy();
     }
 
     function update ()

@@ -50,6 +50,7 @@
     var playerMove = new PlayerMove();
     var game = new Phaser.Game(config);
     
+    // loading all assets into my game
     function preload ()
     {
         this.load.spritesheet('girlR', 'assets/player.png', { frameWidth: 69, frameHeight: 44 });
@@ -125,10 +126,9 @@
         });
     }
   
-
+    // generating player right and left animations
     function playerAnimations(game)
     {
-        // generating player right and left animations
         game.anims.create({
             key: 'left',
             frames: game.anims.generateFrameNumbers('girlL', { frames: [11, 10, 9, 8, 7, 6, 17, 16] }),
@@ -194,9 +194,9 @@
         });
     }
 
+    // generating enemy right and left animations
     function generateEnemyAnimations(game)
-    {
-        // generating enemy right and left animations
+    {    
         game.anims.create({
             key: 'enemyIdleR',
             frames: game.anims.generateFrameNumbers('enemyR', { start: 0, end: 7 }),
@@ -256,6 +256,7 @@
         });
     }
 
+    // creating an off screen platform that forms the floor
     function createFloor(game)
     {
         floor = game.physics.add.staticGroup();
@@ -263,11 +264,16 @@
         game.physics.add.collider(player, floor);
     }
 
-   function create ()
+    // creating and populating the game
+    function create ()
     {
+        // creating the background
         this.add.image(400, 265, 'forest').setScale(1.7);
 
+        // populating the player
         createPlayer(this, 100, 450);
+
+        // creating and positioning the enemies
         let positions = [
             {x:1200,y:350},
             {x:200,y:250},
@@ -279,11 +285,13 @@
            numOfEnemys++;
         }); 
     
+        // creating the starting the coins
         createCoin(this, 1000, 800, false);
         createCoin(this, 1080, 45, true);
 
         cursors = this.input.keyboard.createCursorKeys();
 
+        // placing each platform
         createPlatform(this, 1000, 530, 500, 45);
         createPlatform(this, 200, 530, 500, 45);
         createPlatform(this, 625, 300, 45, 300);
@@ -295,12 +303,15 @@
 
         keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
    
+        // score text
         scoreText = this.add.text(1110, 10, "= " + score, { font: "65px Arial", fill: "#237BCC", align: "center" });
 
+        // instruction text
         instructionText = this.add.text(110, 10, "arrows to move and E to attack", { font: "65px Arial", fill: "#237BCC", align: "center" });
 
     }
 
+    // changes the score text 
     function updateText() 
     {
         scoreText.setText("= " + score)
@@ -314,13 +325,17 @@
         });
    
     }
+
+    // called every cycle to determin what the enemy should do
     function updateEnemy(game,enemy)
     {  
+        // if the enemy has been killed, don't bother
         if (enemy.sprite == null || enemy.sprite.alive === false)
         {
             return;
         }
 
+        // if the player is overlaping the enemy 
         if (enemy.isPlayerOverlap)
         {
             enemy.isPlayerOverlap = false;
@@ -332,6 +347,7 @@
                 }
                 else enemy.ai.enemyMove.dieRight();
                 
+                // drop a coin and remove the enemy
                 createCoin(game, enemy.sprite.x - 85, enemy.sprite.y - 400, false);
                 enemy.sprite.alive = false;
                 enemy.sprte = null;        
@@ -346,6 +362,7 @@
                 return;
             }
 
+            // check if the enemy just killed the player
             if (enemy.ai.enemyMove.enemyIsStriking && playerMove.isPlayerDead == false)
             {
                 looseGame(game);
@@ -353,6 +370,7 @@
         }
     }
 
+    // you win text and the treasure trove effect
     function winGame(game)
     {
         game.add.text(450, 10, "You win!", { font: "100px Arial", fill: "#237BCC", align: "center" });
@@ -362,6 +380,7 @@
         }
     }
 
+    // play the death animation and add the loose text
     function looseGame(game)
     {
         game.add.text(450, 10, "You lose!", { font: "100px Arial", fill: "#237BCC", align: "center" });
@@ -398,11 +417,13 @@
         }
     }
 
+    // removes the instruction text
     function fadeInstructions()
     {
         instructionText.destroy();
     }
 
+    // called each cycle
     function update ()
     {
         updatePlayer();

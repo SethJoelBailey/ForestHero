@@ -8,12 +8,14 @@ class EnemyAI
         this.dirTimer = setInterval(this.chooseDirection, 2000, this);
     }
     
+    // creates a random number
     generateRand(upperLimit)
     {
         console.log("rand");
         return Math.floor(Math.random() * upperLimit) + 1;
     }
 
+    // will randomly chose an action of the enemy
     chooseDirection(_this)
     {
         if (_this.enemy == null) return
@@ -34,9 +36,9 @@ class EnemyAI
         }
     }
 
+    // removes the timer
     kill()
     {
         clearInterval(this.dirTimer);
     }
-//dddddd
 }

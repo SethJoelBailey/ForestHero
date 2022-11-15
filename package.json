@@ -1,0 +1,12 @@
+{
+    "name": "iron-rose",
+    "version": "0.1.0",
+    "description": "Static combat platformer",
+    "engines": {
+      "node": "16.x"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/SethJoelBailey/Iron-Rose"
+    }
+  }

@@ -353,6 +353,7 @@
                 enemy.sprte = null;        
                 numOfEnemys--;
                 enemy.ai.kill();
+                fadeInstructions();
                 
                 if (numOfEnemys == 0)
                 {
@@ -365,6 +366,7 @@
             // check if the enemy just killed the player
             if (enemy.ai.enemyMove.enemyIsStriking && playerMove.isPlayerDead == false)
             {
+                fadeInstructions();
                 looseGame(game);
             }
         }

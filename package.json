@@ -5,6 +5,7 @@
     "engines": {
       "node": "16.x"
     },
+    "main": "game.html",
     "repository": {
       "type": "git",
       "url": "https://github.com/SethJoelBailey/Iron-Rose"
